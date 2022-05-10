@@ -1,0 +1,114 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background: #fafafa;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 350px 1fr;
+      grid-template-columns: 350px 1fr;
+  -ms-grid-rows: auto;
+      grid-template-rows: auto;
+      grid-template-areas: "sidebar main";
+  width: 100vw;
+  height: 100vh;
+}
+
+.column {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.gap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 20px;
+}
+
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.sidebar {
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+  grid-area: sidebar;
+  border-right: 1px solid #ddd;
+  -webkit-transition: border-color 0.4s ease;
+  transition: border-color 0.4s ease;
+  padding: 50px;
+}
+
+.sidebar .logo {
+  margin-bottom: 50px;
+}
+
+.sidebar .border-left {
+  font-size: 18px;
+  font-weight: 300;
+  position: relative;
+  padding: 8px;
+  border-left: 2px solid transparent;
+}
+
+.sidebar .border-left:hover {
+  border-left: 2px solid #000;
+}
+
+a {
+  cursor: pointer;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 300;
+  margin-bottom: 24px;
+}
+
+.main {
+  -ms-grid-row: 1;
+  -ms-grid-column: 2;
+  grid-area: main;
+  background-color: #fafafa;
+  padding: 50px;
+}
+
+.console-out {
+  color: #000;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.console-out .line {
+  display: block;
+}
+
+.console-out .line::before {
+  content: "{" attr(data-time) "}" " ➭ ";
+  color: #000;
+}
+/*# sourceMappingURL=main.css.map */

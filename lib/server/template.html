@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Local Server</title>
+</head>
+
+<body>
+	<div class="notification"></div>
+	<div class="console-out">
+		<pre></pre>
+	</div>
+	
+	<script>
+		const ANSI = {
+			"31": "red",
+			"32": "green",
+			"33": "yellow",
+			"34": "blue",
+			"35": "magenta",
+			"36": "cyan",
+		}
+
+		const out = document.querySelector(".console-out pre");
+		const notification = document.querySelector(".notification")
+
+		const ws = new WebSocket("ws://localhost:19004");
+		ws.addEventListener("open", () => {
+			console.log("We are connected");
+		});
+
+		ws.addEventListener('message', function (event) {
+			let msg = JSON.parse(event.data);
+			// Replace the ANSI color sequences with spans
+			msg.message = msg.message.replace(/\x1b\[(\d+)m(.*?)\x1b\[0m/g, (all, color, content) => {
+				return `<span style="color: ${ANSI[color]}">${content}</span>`;
+			});
+			out.innerHTML += msg.message + "\n";
+
+			// Check the action for special events
+			if (msg.action == "shutdown") {
+				// Notify the user that the server has been shutdown
+				notification.classList.add("error");
+				notification.innerHTML = "Server has been shutdown, this client will no longer receive updates and the window is no longer updated. You may close this window now.";
+			}
+		});
+	</script>
+</body>
+
+</html>

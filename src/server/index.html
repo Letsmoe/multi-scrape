@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../style/main.css">
+	<title>Local Server</title>
+</head>
+
+<body>
+	<div class="sidebar">
+		<img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wiki-tech-logo-hub.svg/640px-Wiki-tech-logo-hub.svg.png" width="50" height="50">
+		<div class="column gap">
+			<a class="border-left">Home</a>
+			<a class="border-left">Profile</a>
+			<a class="border-left">Stats</a>
+			<a class="border-left">Settings</a>
+		</div>
+	</div>
+	<div class="main">
+		<h2>Console Output</h2>
+		<pre class="console-out"></pre>
+	</div>
+	
+	<script>
+		const ANSI = {
+			"31": "red",
+			"32": "green",
+			"33": "yellow",
+			"34": "blue",
+			"35": "magenta",
+			"36": "cyan",
+		}
+
+		const out = document.querySelector(".console-out");
+		const notification = document.querySelector(".notification")
+
+		const ws = new WebSocket("ws://localhost:19004");
+		ws.addEventListener("open", () => {
+			console.log("We are connected");
+		});
+
+		ws.addEventListener('message', function (event) {
+			let msg = JSON.parse(event.data);
+			// Replace the ANSI color sequences with spans
+			msg.message = msg.message.replace(/\x1b\[(\d+)m(.*?)\x1b\[0m/g, (all, color, content) => {
+				return `<span style="color: ${ANSI[color]}">${content}</span>`;
+			});
+			// Split the message at each new line and append a line element separately.
+			msg.message.split("\n").forEach(line => {
+				let lineEl = document.createElement("span");
+				lineEl.className = "line";
+				lineEl.innerHTML = line;
+				lineEl.dataset.time = (new Date()).getHours() + ":" + (new Date()).getMinutes();
+				out.appendChild(lineEl);
+			});
+
+			// Check the action for special events
+			if (msg.action == "shutdown") {
+				// Notify the user that the server has been shutdown
+				notification.classList.add("error");
+				notification.innerHTML = "Server has been shutdown, this client will no longer receive updates and the window is no longer updated. You may close this window now.";
+			}
+		});
+	</script>
+</body>
+
+</html>
